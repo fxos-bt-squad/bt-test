@@ -12,7 +12,24 @@ $> cd outoftree_apps
 $> ln -s path/to/bt-test bt-test
 ```
 
-Then building gaia in engineer build, you'll have bt-test installed in your runtime or device. 
+Then building gaia in engineer build, you'll have bt-test installed in your runtime or device.
+
+## Development
+
+* Prerequisite
+    - npm
+    - gulp
+
+```sh
+$> npm install -g gulp
+$> npm install
+```
+
+* lint/hint-as-you-save
+
+```sh
+$> gulp
+```
 
 ## Reference
 [https://wiki.mozilla.org/B2G/Bluetooth/WebBluetooth-v2](https://wiki.mozilla.org/B2G/Bluetooth/WebBluetooth-v2)
