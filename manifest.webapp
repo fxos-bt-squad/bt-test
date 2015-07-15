@@ -1,0 +1,19 @@
+{
+  "name": "BT Test App",
+  "description": "BT Test App",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "The Gaia Team",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "en-US": {
+      "name": "BT Test App",
+      "description": "BT Test App"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "128": "/style/icons/bluetooth.png"
+  }
+}
