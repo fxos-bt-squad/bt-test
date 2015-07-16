@@ -1,0 +1,16 @@
+{
+  "name": "bt-test",
+  "version": "1.0.0",
+  "homepage": "https://github.com/dwi2/bt-test",
+  "description": "BT Test App",
+  "license": "MPL-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

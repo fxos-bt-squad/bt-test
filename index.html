@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <title>BT Test App</title>
-
-    <script src="js/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/app.css">
+    <script defer src="js/app.js"></script>
   </head>
-
-  <body>
-
-    <p>Implement BT Test App</p>
-
+  <body data-mode="classic-api">
+    <section id="classic-api" class="panel">
+      <h1>Classic API</h1>
+    </section>
+    <section id="ble-server-api" class="panel" hidden>
+      <h1>BLE GATT Server API</h1>
+    </section>
+    <section id="ble-client-api" class="panel" hidden>
+      <h1>BLE GATT Client API</h1>
+    </section>
+    <section id="control-panel">
+      <div>
+        <button id="classic-api-button" class="mode-button" disabled="disabled">Classic API</button>
+        <button id="ble-server-api-button" class="mode-button">BLE Server API</button>
+        <button id="ble-client-api-button" class="mode-button">BLE Client API</button>
+      </div>
+    </section>
   </body>
-
 </html>
