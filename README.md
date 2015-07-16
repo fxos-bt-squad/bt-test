@@ -24,7 +24,7 @@ Then building gaia in engineer build, you'll have bt-test installed in your runt
 ```sh
 $> npm install -g gulp bower
 $> npm install
-$> bower install
+$> gulp build
 ```
 
 * lint/hint-as-you-save
