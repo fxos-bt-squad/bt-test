@@ -17,6 +17,7 @@
   "homepage": "https://github.com/dwi2/bt-test#readme",
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-bower": "0.0.10",
     "gulp-jshint": "^1.11.2",
     "gulp-notify": "^2.2.0",
     "jshint-stylish": "^2.0.1"
