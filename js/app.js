@@ -19,6 +19,8 @@
       [].forEach.call(this.modeButtons, function(button) {
         button.addEventListener('click', that);
       });
+
+      exports.classic.start($('#classic-api'));
     },
 
     handleEvent: function(evt) {
