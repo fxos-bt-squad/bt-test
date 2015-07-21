@@ -1,5 +1,5 @@
 (function(exports) {
-  'use stricts';
+  'use strict';
 
   exports.classic = exports.classic || {};
 
@@ -22,10 +22,11 @@
       this._tab.name = 'tab ' + id;
       tabsManager.addTab(this._tab);
     };
+    var backends = [];
     for (var i = 0; i < 4; ++i) {
-      new FakeBackend(i);
+      backends.push(new FakeBackend(i));
     }
-  }
+  };
 
   classic.start = function(container) {
     testMain(container);

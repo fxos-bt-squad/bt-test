@@ -1,3 +1,5 @@
+/* global $ */
+
 (function(exports) {
   'use strict';
 

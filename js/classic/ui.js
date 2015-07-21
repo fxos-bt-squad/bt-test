@@ -1,5 +1,7 @@
-(function(exports) {
-  'use stricts';
+/* global $ */
+
+ (function(exports) {
+  'use strict';
 
   exports.classic = exports.classic || {};
   exports.classic.ui = exports.classic.ui || {};
