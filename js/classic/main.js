@@ -24,14 +24,20 @@
           this._me._switch.state = this._me._switch.STATE.OFF;
         },
         onCancelTurnOn: function() {},
-        onCancelTurnOff: function() {}
+        onCancelTurnOff: function() {},
+        onPlay: function() {
+          console.log('clicked');
+        }
       };
       this._tab = new ui.Tab(this._eventHandler);
       this._tab.name = 'tab ' + id;
       this._switch = new ui.SwitchButtonBlock(
           this._eventHandler, 'name', 'description!!');
+      this._play = new ui.PlayButtonBlock(
+          this._eventHandler, 'name2', 'description2!!');
 
       this._tab.addBlock(this._switch, 0);
+      this._tab.addBlock(this._play, 1);
       tabsManager.addTab(this._tab);
     };
     var backends = [];

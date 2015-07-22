@@ -47,3 +47,24 @@
 .classic-ui-block .switch-button-body {
   margin-top: 5px;
 }
+
+.classic-ui-block .play-button-title {
+  display: table;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.classic-ui-block .play-button-title .left {
+  cursor: pointer;
+  display: table-cell;
+}
+
+.classic-ui-block .play-button-title .right {
+  cursor: pointer;
+  display: table-cell;
+  width: 0;
+}
+
+.classic-ui-block .play-button-body {
+  margin: 5px;
+}
