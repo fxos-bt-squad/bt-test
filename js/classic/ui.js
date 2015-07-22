@@ -58,7 +58,9 @@
     /**
      * Returns the current state.
      */
-    get state() { return this._state; },
+    get state() {
+      return this._state;
+    },
 
     /**
      * Sets the current state.
@@ -82,18 +84,26 @@
     /**
      * Returns whether this switch is enabled or not.
      */
-    get enable() { return this._enable; },
+    get enable() {
+      return this._enable;
+    },
 
     /**
      * Sets whether this switch is enabled or not.
      *
      * @param state true if you want to enable this switch.
      */
-    set enable(state) { this._enable = state; },
+    set enable(state) {
+      this._enable = state;
+    },
 
-    get selector() { return this._selector; },
+    get selector() {
+      return this._selector;
+    },
 
-    destroy: function() { this._selector.remove(); },
+    destroy: function() {
+      this._selector.remove();
+    },
 
     _onClick: function() {
       if (!this._enable) {
@@ -132,7 +142,9 @@
     /**
      * Returns true if this block is expanded.
      */
-    get isExpanded() { return this._isExpanded; },
+    get isExpanded() {
+      return this._isExpanded;
+    },
 
     /**
      * Sets whether this block is expanded or not.
@@ -149,12 +161,16 @@
     /**
      * Toggles the state of whether this block is expanded or not.
      */
-    toggleExpand: function() { this.isExpanded = !this.isExpanded; },
+    toggleExpand: function() {
+      this.isExpanded = !this.isExpanded;
+    },
 
     /**
      * Returns the jquery selector representing this block ui component.
      */
-    get selector() { return this._selector; },
+    get selector() {
+      return this._selector;
+    },
 
     /**
      * Adds an jquery selector as a child of this ui component.
@@ -182,7 +198,9 @@
     /**
      * Destroys the whole ui components, which includes all the children.
      */
-    destroy: function() { this._selector.remove(); }
+    destroy: function() {
+      this._selector.remove();
+    }
   };
 
   ui.SwitchButtonBlock = function(
@@ -212,11 +230,19 @@
   ui.SwitchButtonBlock.prototype = {
     STATE: ui.SwitchButtonBlock.STATE,
 
-    get enable() { return this._button.enable; },
-    set enable(state) { this._button.enable = state; },
+    get enable() {
+      return this._button.enable;
+    },
+    set enable(state) {
+      this._button.enable = state;
+    },
 
-    get state() { return this._button.state; },
-    set state(state) { this._button.state = state; },
+    get state() {
+      return this._button.state;
+    },
+    set state(state) {
+      this._button.state = state;
+    },
 
     destroy: function() {
       this._button.destroy();
