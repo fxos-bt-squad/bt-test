@@ -17,9 +17,10 @@ Then building gaia in engineer build, you'll have bt-test installed in your runt
 ## Development
 
 * Prerequisite
-    - npm
-    - gulp
-    - bower
+    - [Node.JS v0.12](https://nodejs.org/)
+    - [npm](https://www.npmjs.com/)
+    - [gulp](http://gulpjs.com/)
+    - [bower](http://bower.io/)
 
 ```sh
 $> npm install -g gulp bower
@@ -27,11 +28,15 @@ $> npm install
 $> gulp build
 ```
 
-* lint/hint-as-you-save
+* lint-as-you-save or hint-as-you-save
 
 ```sh
 $> gulp
 ```
+
+## Run unit-test
+
+$> gulp test
 
 ## Reference
 [https://wiki.mozilla.org/B2G/Bluetooth/WebBluetooth-v2](https://wiki.mozilla.org/B2G/Bluetooth/WebBluetooth-v2)
