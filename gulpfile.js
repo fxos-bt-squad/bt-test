@@ -45,8 +45,6 @@ gulp.task('watch', function() {
 
 gulp.task('build', ['bower', 'jshint', 'jscs']);
 
-gulp.task('build-and-test', ['build', 'test'])
-
 gulp.task('dependency-for-test', function() {
   return gulp.src(TEST_DEPENDENCY)
     .pipe(gulp.dest('.tmp'));
@@ -70,8 +68,7 @@ gulp.task('prepare-for-test', ['build', 'dependency-for-test'], function() {
     .pipe(sourcemaps.init())
     .pipe(concat('test.js'))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('.tmp'))
-    .pipe(browserSync.stream());
+    .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('test', ['prepare-for-test'], function() {
@@ -86,4 +83,4 @@ gulp.task('test', ['prepare-for-test'], function() {
   gulp.watch(JS_FILE_PATH, ['prepare-for-test']);
 });
 
-gulp.task('default', ['build-and-test']);
+gulp.task('default', ['test']);
