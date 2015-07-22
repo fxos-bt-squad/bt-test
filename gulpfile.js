@@ -2,10 +2,32 @@
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var notify = require('gulp-notify');
+var gulpUtil = require('gulp-util');
 var bower = require('gulp-bower');
+var jscs = require('gulp-jscs');
+var browserSync = require('browser-sync');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+var fs = require('fs');
+var path = require('path');
+
+var JS_FILE_PATH = ['js/**/*.js', 'test/**/*.js'];
+var TEST_FILE_PATH = ['test/**/*.js'];
+var TEST_DEPENDENCY = [
+  'test/runner.html',
+  'node_modules/should/should.min.js',
+  'node_modules/sinon/pkg/sinon.js',
+  'node_modules/mocha/mocha.js',
+  'node_modules/mocha/mocha.css',
+  'lib/**/*.js'
+];
+
+gulp.task('bower', function() {
+  return bower().pipe(gulp.dest('lib'));
+});
 
 gulp.task('jshint', function() {
-  gulp.src('js/**/*.js')
+  return gulp.src(JS_FILE_PATH)
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .on('error', notify.onError(function (error) {
@@ -13,16 +35,55 @@ gulp.task('jshint', function() {
     }));
 });
 
-gulp.task('bower', function() {
-  return bower().pipe(gulp.dest('lib'));
+gulp.task('jscs', function() {
+  return gulp.src(JS_FILE_PATH).pipe(jscs());
 });
 
 gulp.task('watch', function() {
-  gulp.watch('js/**/*.js', ['jshint']);
+  gulp.watch(JS_FILE_PATH, ['jshint', 'jscs']);
 });
 
-gulp.task('default', ['build'], function () {
-  gulp.start('watch');
+gulp.task('build', ['bower', 'jshint', 'jscs']);
+
+gulp.task('build-and-test', ['build', 'test'])
+
+gulp.task('dependency-for-test', function() {
+  return gulp.src(TEST_DEPENDENCY)
+    .pipe(gulp.dest('.tmp'));
 });
 
-gulp.task('build', ['bower', 'jshint']);
+gulp.task('prepare-for-test', ['build', 'dependency-for-test'], function() {
+  var jsFiles = fs.readdirSync('js');
+  var filesToBundle = [];
+
+  jsFiles.forEach(function(jsFile) {
+    var parsedName = path.parse(jsFile);
+    var jsFilePath = 'js/' + jsFile;
+    var testFilePath = 'test/' + parsedName.name + '_test.js';
+    if (fs.existsSync(testFilePath)) {
+      filesToBundle.push(jsFilePath);
+      filesToBundle.push(testFilePath);
+    }
+  });
+
+  return gulp.src(filesToBundle)
+    .pipe(sourcemaps.init())
+    .pipe(concat('test.js'))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('.tmp'))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('test', ['prepare-for-test'], function() {
+  browserSync.init({
+    server: {
+      baseDir: '.tmp',
+      index: 'runner.html'
+    }
+  });
+
+  gulp.watch(['.tmp/**/*']).on('change', browserSync.reload);
+  gulp.watch(JS_FILE_PATH, ['prepare-for-test']);
+});
+
+gulp.task('default', ['build-and-test']);

@@ -33,8 +33,12 @@
   };
 
   ui.Tab.prototype = {
-    get name() { return this._titleLink.html(); },
-    set name(name) { return this._titleLink.html(name); },
+    get name() {
+      return this._titleLink.html();
+    },
+    set name(name) {
+      return this._titleLink.html(name);
+    },
 
     addBlock: function(block, index) {
       index = Math.max(index, 0);
@@ -56,8 +60,12 @@
       return this;
     },
 
-    get titleSelector() { return this._title; },
-    get bodySelector() { return this._body; },
+    get titleSelector() {
+      return this._title;
+    },
+    get bodySelector() {
+      return this._body;
+    },
 
     destroy: function() {
       for (var i = 0; i < this._blocks; ++i) {
@@ -68,9 +76,10 @@
       return this;
     },
 
-    _onCloseButtonClicked: function() { this._handler.onClose(); }
+    _onCloseButtonClicked: function() {
+      this._handler.onClose();
+    }
   };
-
 
   ui.TabsManager = function() {
     this._body = $(document.createElement('div'));
@@ -100,6 +109,8 @@
       return this;
     },
 
-    get selector() { return this._body; }
+    get selector() {
+      return this._body;
+    }
   };
 })(window);

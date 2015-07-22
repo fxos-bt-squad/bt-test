@@ -1,23 +1,32 @@
-/* global $ */
+/* global $, evt, App */
 
 (function(exports) {
   'use strict';
 
-  var App = function() {
+  exports.App = function() {
   };
 
-  App.prototype = {
-    classicSection: document.getElementById('classic-api'),
-    bleServerSection: document.getElementById('ble-server-api'),
-    bleClientSection: document.getElementById('ble-client-api'),
-    controlPanel: document.getElementById('control-panel'),
-
-    panelSections: document.getElementsByClassName('panel'),
-    modeButtons: document.getElementsByClassName('mode-button'),
-    mode: document.body.dataset.mode,
+  App.prototype = evt({
+    classicSection: undefined,
+    bleServerSection: undefined,
+    bleClientSection: undefined,
+    controlPanel: undefined,
+    panelSections: undefined,
+    modeButtons: undefined,
+    mode: undefined,
 
     start: function() {
       var that = this;
+      this.classicSection = document.getElementById('classic-api'),
+      this.bleServerSection = document.getElementById('ble-server-api'),
+      this.bleClientSection = document.getElementById('ble-client-api'),
+      this.controlPanel = document.getElementById('control-panel'),
+
+      this.panelSections = document.getElementsByClassName('panel'),
+      this.modeButtons =
+        this.controlPanel.getElementsByClassName('mode-button'),
+      this.mode = document.body.dataset.mode,
+
       [].forEach.call(this.modeButtons, function(button) {
         button.addEventListener('click', that);
       });
@@ -29,7 +38,9 @@
       var target = evt.target;
       if (evt.type === 'click' && target.classList.contains('mode-button')) {
         var mode = target.id.replace('-button', '');
+        this.fire('before-switching-mode', {mode: mode});
         this.switchMode(mode);
+        this.fire('after-switching-mode', {mode: mode});
       }
     },
 
@@ -50,8 +61,6 @@
         }
       });
     }
-  };
+  });
 
-  exports.app = new App();
-  exports.app.start();
 }(window));
