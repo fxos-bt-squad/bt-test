@@ -16,10 +16,22 @@
         onClose: function() {
           tabsManager.removeTab(this._me._tab);
           this._me._tab.destroy();
-        }
+        },
+        onTurnOn: function() {
+          this._me._switch.state = this._me._switch.STATE.ON;
+        },
+        onTurnOff: function() {
+          this._me._switch.state = this._me._switch.STATE.OFF;
+        },
+        onCancelTurnOn: function() {},
+        onCancelTurnOff: function() {}
       };
       this._tab = new ui.Tab(this._eventHandler);
       this._tab.name = 'tab ' + id;
+      this._switch = new ui.SwitchButtonBlock(
+          this._eventHandler, 'name', 'description!!');
+
+      this._tab.addBlock(this._switch, 0);
       tabsManager.addTab(this._tab);
     };
     var backends = [];

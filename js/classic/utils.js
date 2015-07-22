@@ -24,4 +24,26 @@
       return prefix + (++counter[prefix]);
     };
   })();
+
+  /**
+   * Lets a class inherit from a gived parent class.
+   *
+   * This is implemented by creating the prototype chain.
+   *
+   * @param child the class to become child.
+   * @param parent the class to become parent.
+   */
+  utils.setInheritFrom = (function() {
+    var setPrototypeOf = Object.setPrototypeOf;
+    if (!(Object.setPrototypeOf instanceof Function)) {
+      setPrototypeOf = function(obj, proto) {
+        obj.__proto__ = proto;
+        return obj;
+      };
+    }
+    return function(child, parent) {
+      setPrototypeOf(child.prototype, parent.prototype);
+      child.prototype.constructor = parent;
+    };
+  })();
 })(window);
