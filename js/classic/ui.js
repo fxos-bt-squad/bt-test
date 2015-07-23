@@ -252,6 +252,48 @@
 
   utils.setInheritFrom(ui.SwitchButtonBlock, ui.Block);
 
+  ui.PlayButtonBlock = function(handler, name, description, defaultEnable) {
+    ui.Block.call(this, false);
+
+    var title = $(window.document.createElement('div'));
+    title.addClass('play-button-title');
+    var titleLeft = $(window.document.createElement('div')).addClass('left');
+    titleLeft.html(name);
+    titleLeft.click(this.toggleExpand.bind(this));
+    var titleRight = $(window.document.createElement('div')).addClass('right');
+    var playButton = $(window.document.createElement('span'));
+    playButton.addClass('ui-icon').addClass('ui-icon-play');
+    playButton.click(this._onPlay.bind(this));
+    title.append(titleLeft).append(titleRight.append(playButton));
+
+    var body = $(window.document.createElement('div'));
+    body.addClass('play-button-body').html(description);
+
+    this.addChildSelector(title, 0, false);
+    this.addChildSelector(body, 1, true);
+
+    this._handler = handler;
+    this._enable = null;
+
+    this.enable = (defaultEnable !== undefined ? defaultEnable : true);
+  };
+
+  ui.PlayButtonBlock.prototype = {
+    get enable() {
+      return this._enable;
+    },
+    set enable(state) {
+      this._enable = state;
+    },
+    _onPlay: function() {
+      if (this._enable) {
+        this._handler.onPlay();
+      }
+    }
+  };
+
+  utils.setInheritFrom(ui.PlayButtonBlock, ui.Block);
+
   ui.Tab = function(handler) {
     this._id = utils.createUniqueId();
 
