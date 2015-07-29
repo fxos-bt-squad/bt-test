@@ -18,9 +18,14 @@ html, body {
 #control-panel > div > button {
   width: 31%;
   height: 3rem;
+  font-size: 1.2rem;
 }
 
 section.panel {
   height: 90%;
   width: 95%;
+}
+
+section.panel > h1 {
+  font-size: 1.2rem;
 }

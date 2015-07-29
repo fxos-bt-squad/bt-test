@@ -8,6 +8,7 @@ var jscs = require('gulp-jscs');
 var browserSync = require('browser-sync');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
+var del = require('del');
 var fs = require('fs');
 var path = require('path');
 
@@ -21,6 +22,8 @@ var TEST_DEPENDENCY = [
   'node_modules/mocha/mocha.css',
   'lib/**/*.js'
 ];
+
+gulp.task('clean', del.bind(null, ['.tmp', 'bower_components', 'lib']));
 
 gulp.task('bower', function() {
   return bower().pipe(gulp.dest('lib'));

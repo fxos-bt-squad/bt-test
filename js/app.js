@@ -1,4 +1,4 @@
-/* global $, evt, App */
+/* global $, evt, App, BleServer */
 
 (function(exports) {
   'use strict';
@@ -14,6 +14,7 @@
     panelSections: undefined,
     modeButtons: undefined,
     mode: undefined,
+    _bleServer: undefined,
 
     start: function() {
       var that = this;
@@ -26,6 +27,9 @@
       this.modeButtons =
         this.controlPanel.getElementsByClassName('mode-button'),
       this.mode = document.body.dataset.mode,
+
+      this._bleServer = new BleServer();
+      this._bleServer.start(this);
 
       [].forEach.call(this.modeButtons, function(button) {
         button.addEventListener('click', that);
