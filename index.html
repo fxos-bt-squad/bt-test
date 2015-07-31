@@ -6,13 +6,16 @@
     <title>BT Test App</title>
     <link rel="stylesheet" type="text/css" href="lib/jquery-ui/themes/base/all.css">
     <link rel="stylesheet" type="text/css" href="style/app.css">
+    <link rel="stylesheet" type="text/css" href="style/ble-server-api.css">
     <link rel="stylesheet" type="text/css" href="style/classic/ui.css">
     <script defer src="lib/evt/index.js"></script>
     <script defer src="lib/jquery/dist/jquery.min.js"></script>
     <script defer src="lib/jquery-ui/jquery-ui.min.js"></script>
+    <script defer src="lib/bluetooth_manager/index.js"></script>
     <script defer src="js/classic/utils.js"></script>
     <script defer src="js/classic/ui.js"></script>
     <script defer src="js/classic/main.js"></script>
+    <script defer src="js/ble_server.js"></script>
     <script defer src="js/app.js"></script>
     <script defer src="js/bootstrap.js"></script>
   </head>
@@ -22,6 +25,11 @@
     </section>
     <section id="ble-server-api" class="panel" hidden>
       <h1>BLE GATT Server API</h1>
+      <div>
+        <h2 id="ble-server-adapter-state">disabled</h2>
+        <h2 id="ble-server-discovering-state"></h2>
+        <div id="ble-server-devices-list"></div>
+      </div>
     </section>
     <section id="ble-client-api" class="panel" hidden>
       <h1>BLE GATT Client API</h1>

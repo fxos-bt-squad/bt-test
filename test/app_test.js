@@ -53,14 +53,23 @@ describe('app', function() {
     delete document.body.dataset.mode;
   };
 
+  var FakeBleServer = function() {};
+  FakeBleServer.prototype = {
+    start: function() {}
+  };
+
   describe('interface of App', function() {
     var testDocument;
     var realClassic;
     var realDollorSign;
+    var realBleServer;
 
     before(function() {
       testDocument = document.getElementById('test-document');
       setupHTML(testDocument);
+
+      realBleServer = window.BleServer;
+      window.BleServer = FakeBleServer;
 
       realClassic = window.classic;
       window.classic = {
@@ -74,6 +83,7 @@ describe('app', function() {
     after(function() {
       testDocument.innerHTML = '';
       teardownHTML();
+      window.BleServer = realBleServer;
       window.classic = realClassic;
       window.$ = realDollorSign;
       delete window.app;

@@ -12,6 +12,10 @@
       "description": "BT Test App"
     }
   },
+  "type": "certified",
+  "permissions": {
+    "bluetooth": {}
+  },
   "default_locale": "en-US",
   "icons": {
     "128": "/style/icons/bluetooth.png"
