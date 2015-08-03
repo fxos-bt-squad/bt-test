@@ -68,3 +68,60 @@
 .classic-ui-block .play-button-body {
   margin: 5px;
 }
+
+.classic-ui-execution-block > .nav {
+  display: table;
+  width: 100%;
+}
+
+.classic-ui-execution-block > .nav > div {
+  display: table-cell;
+}
+
+.classic-ui-execution-block > .nav > .left > .status {
+  min-height: 1em;
+}
+
+.classic-ui-execution-block > .nav > .left > .progress-bar {
+  height: 0.6em;
+}
+
+.classic-ui-execution-block > .nav > .button {
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  width: 0;
+}
+
+.classic-ui-execution-block > .nav > .button-state-start {
+  background-color: #3a3;
+}
+
+.classic-ui-execution-block > .nav > .button-state-starting {
+  background-color: #aaa;
+}
+
+.classic-ui-execution-block > .nav > .button-state-stop {
+  background-color: #a33;
+}
+
+.classic-ui-execution-block > .nav > .button-state-stopping {
+  background-color: #aaa;
+}
+
+.classic-ui-execution-block > .body {
+  display: table-cell;
+}
+
+.classic-ui-execution-block > .input-row {
+  display: table-row;
+}
+
+.classic-ui-execution-block > .input-row > .name {
+  display: table-cell;
+  width: 0;
+}
+
+.classic-ui-execution-block > .input-row > .input {
+  display: table-cell;
+}

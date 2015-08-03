@@ -1,6 +1,6 @@
 /* global $ */
 
- (function(exports) {
+(function(exports) {
   'use strict';
 
   exports.classic = exports.classic || {};
@@ -120,6 +120,95 @@
       }
     }
   };
+
+  ui.Input = function(selector) {
+    this._selector = selector;
+  };
+
+  ui.Input.prototype = {
+    get value() {
+      return this._selector.val();
+    },
+    set value(value) {
+      this._selector.val(value);
+    },
+    get selector() {
+      return this._selector;
+    },
+    destroy: function() {
+      this._selector.remove();
+    }
+  };
+
+  ui.NumberInput = function(handler, minValue, maxValue, step, defaultValue) {
+    ui.Input.call(this, $(window.document.createElement('input')));
+    this.selector.attr('type', 'number');
+    this.selector.attr('min', minValue);
+    this.selector.attr('max', maxValue);
+    this.selector.attr('step', step);
+    this.selector.val(defaultValue);
+    this.selector.change(function() {
+      handler.onChange();
+    });
+  };
+
+  ui.NumberInput.prototype = {};
+
+  utils.setInheritFrom(ui.NumberInput, ui.Input);
+
+  ui.StringInput = function(handler, defaultValue) {
+    ui.Input.call(this, $(window.document.createElement('input')));
+    this.selector.attr('type', 'text').val(defaultValue);
+    this.selector.change(function() {
+      handler.onChange();
+    });
+  };
+
+  ui.StringInput.prototype = {};
+
+  utils.setInheritFrom(ui.StringInput, ui.Input);
+
+  ui.OptionsInput = function(handler, options, defaultValue) {
+    ui.Input.call(this, $(window.document.createElement('select')));
+    for (var i = 0; i < options.length; ++i) {
+      var option = $(window.document.createElement('option'));
+      option.attr('value', options[i]).html(options[i]);
+      if (options[i] == defaultValue) {
+        option.attr('selected', 'selected');
+      }
+      this.selector.append(option);
+    }
+    this.selector.change(function() {
+      handler.onChange();
+    });
+  };
+
+  ui.OptionsInput.prototype = {
+    addOption: function(option, index) {
+      index = Math.max(0, index);
+      var optionElement = $(window.document.createElement('option'));
+      optionElement.attr('value', option).html(option);
+      if (this.selector.children().length <= index) {
+        this.selector.append(optionElement);
+      } else {
+        this.sleector.children()[index].before(optionElement);
+      }
+
+      return this;
+    },
+    removeOption: function(option) {
+      var children = this.selector.children();
+      for (var i = 0; i < children.length; ++i) {
+        if (children[i].attr('value') == option) {
+          children[i].remove();
+          break;
+        }
+      }
+      return this;
+    }
+  };
+
+  utils.setInheritFrom(ui.OptionsInput, ui.Input);
 
   /**
    * Base class for a block in a tab.
@@ -251,6 +340,104 @@
   };
 
   utils.setInheritFrom(ui.SwitchButtonBlock, ui.Block);
+
+  ui.ExecutionBlock = function(handler, name, description) {
+    ui.Block.call(this, false);
+    this.selector.addClass('classic-ui-execution-block');
+
+    var title = $(window.document.createElement('div')).html(name);
+    title.click(this.toggleExpand.bind(this));
+
+    var descriptionDiv = $(window.document.createElement('div'));
+    descriptionDiv.html(description);
+
+    this._body = $(window.document.createElement('div'));
+    this._body.addClass('body');
+
+    this._buttonDiv = $(window.document.createElement('div'));
+    this._buttonDiv.addClass('button');
+    this._buttonDiv.click(this._buttonOnClickHandler.bind(this));
+
+    this._state = {};
+
+    this._statusDiv = $(window.document.createElement('div'));
+    this._statusDiv.addClass('status');
+    this._progressBar = $(window.document.createElement('div')).progressbar();
+    this._progressBar.addClass('progress-bar');
+
+    this._inputs = {};
+    this._handler = handler;
+
+    var navLeft = $(window.document.createElement('div')).addClass('left');
+    var nav = $(window.document.createElement('div')).addClass('nav');
+    navLeft.append(this._statusDiv).append(this._progressBar);
+    nav.append(navLeft).append(this._buttonDiv);
+
+    this.addChildSelector(title, 0, false);
+    this.addChildSelector(descriptionDiv, 1, true);
+    this.addChildSelector(this._body, 2, true);
+    this.addChildSelector(nav, 3, false);
+
+    this.state = this.STATE.PENDING;
+  };
+
+  ui.ExecutionBlock.STATE = {
+    PENDING: Object.freeze({buttonCaption: 'start', handlerName: 'onStart'}),
+    STARTING: Object.freeze({buttonCaption: 'starting'}),
+    RUNNING: Object.freeze({buttonCaption: 'stop', handlerName: 'onStop'}),
+    STOPPING: Object.freeze({buttonCaption: 'stopping'})
+  };
+
+  ui.ExecutionBlock.prototype = {
+    STATE: ui.ExecutionBlock.STATE,
+    addParameter: function(name, input, index) {
+      var nameDiv = $(window.document.createElement('div'));
+      nameDiv.addClass('name');
+      nameDiv.text(name);
+      var inputDiv = $(window.document.createElement('div'));
+      inputDiv.addClass('input');
+      inputDiv.append(input.selector);
+      var rowDiv = $(window.document.createElement('div'));
+      rowDiv.addClass('input-row');
+      rowDiv.append(nameDiv).append(inputDiv);
+      this._body.insertAt(rowDiv, index);
+      this._inputs[name] = input;
+    },
+    removeParameter: function(name) {
+      var rowDiv = this._inputs[name].selector.parent().parent();
+      this._inputs[name].destroy();
+      rowDiv.remove();
+    },
+    get state() {
+      return this._state;
+    },
+    set state(state) {
+      this._buttonDiv.removeClass('button-state-' + this._state.buttonCaption);
+      this._buttonDiv.addClass('button-state-' + state.buttonCaption);
+      this._buttonDiv.text(state.buttonCaption);
+      this._state = state;
+    },
+    get status() {
+      this._statusDiv.html();
+    },
+    set status(value) {
+      this._statusDiv.html(value);
+    },
+    get progressRate() {
+      return this._progressBar.progressbar('option', 'value') / 100;
+    },
+    set progressRate(value) {
+      return this._progressBar.progressbar('option', 'value', value * 100);
+    },
+    _buttonOnClickHandler: function(evt) {
+      console.log(this._state);
+      if (this._state.hasOwnProperty('handlerName')) {
+        this._handler[this._state.handlerName]();
+      }
+    }
+  };
+
+  utils.setInheritFrom(ui.ExecutionBlock, ui.Block);
 
   ui.PlayButtonBlock = function(handler, name, description, defaultEnable) {
     ui.Block.call(this, false);
