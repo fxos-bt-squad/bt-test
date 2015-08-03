@@ -25,6 +25,9 @@ var TEST_DEPENDENCY = [
 
 gulp.task('clean', del.bind(null, ['.tmp', 'bower_components', 'lib']));
 
+gulp.task('clean-dev', del.bind(null,
+  ['bower_components/bluetooth_manager', 'lib/bluetooth_manager']));
+
 gulp.task('bower', function() {
   return bower().pipe(gulp.dest('lib'));
 });
@@ -47,6 +50,8 @@ gulp.task('watch', function() {
 });
 
 gulp.task('build', ['bower', 'jshint', 'jscs']);
+
+gulp.task('build-dev', ['clean-dev', 'build']);
 
 gulp.task('dependency-for-test', function() {
   return gulp.src(TEST_DEPENDENCY)

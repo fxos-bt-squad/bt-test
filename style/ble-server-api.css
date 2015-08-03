@@ -5,3 +5,16 @@
 .device {
   line-height: 2.5rem;
 }
+
+button.connect {
+  font-size: 1.2rem
+}
+
+.toolbar {
+  position: fixed;
+  right: 1rem;
+}
+
+.toolbar > button {
+  font-size: 1.5rem;
+}
