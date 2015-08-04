@@ -10,6 +10,32 @@
   var ui = exports.classic.ui;
 
   /**
+   * Creates a DOM element and wraps it by a jquery selector.
+   *
+   * @param {string} nodeName - The name of the DOM element to be created.
+   * @param {string=} className - Additional classes to add if needs.
+   * @returns {Object} A jquery selector contains only the element created.
+   */
+  var createSelector = function(nodeName, className) {
+    var selector = $(document.createElement(nodeName));
+    if (className !== undefined) {
+      selector.addClass(className);
+    }
+    return selector;
+  };
+
+  /**
+   * Creates a jquery selector which contains a DOM element for classic-ui.
+   * Its add a class "classic-ui" to the DOM element so we can write css
+   * classes only for elements in class-ui's components easily.
+   *
+   * @see createSelector
+   */
+  var createClassicUISelector = function(nodeName, className) {
+    return createSelector(nodeName, className).addClass('classic-ui');
+  };
+
+  /**
    * An UI component represents a switch.
    *
    * It supports turing on/off operations.
@@ -484,19 +510,14 @@
   ui.Tab = function(handler) {
     this._id = utils.createUniqueId();
 
-    this._title = $(document.createElement('li'));
-    this._title.addClass('classic-ui-tab-title');
-    this._titleLink = $(document.createElement('a'));
-    this._titleLink.attr('href', '#' + this._id);
-    this._titleCloseButton = $(document.createElement('span'));
-    this._titleCloseButton.addClass('ui-icon');
-    this._titleCloseButton.addClass('ui-icon-close');
+    this._title = createClassicUISelector('li', 'tab title');
+    this._titleLink = createSelector('a').attr('href', '#' + this._id);
+    this._titleCloseButton = createSelector('span', 'ui-icon ui-icon-close');
     this._titleCloseButton.attr('role', 'presentation');
     this._titleCloseButton.click(this._onCloseButtonClicked.bind(this));
-    this._title.append(this._titleLink);
-    this._title.append(this._titleCloseButton);
+    this._title.append(this._titleLink, this._titleCloseButton);
 
-    this._body = $(document.createElement('div'));
+    this._body = createClassicUISelector('div', 'tab body');
     this._body.attr('id', this._id);
 
     this._blocks = [];
