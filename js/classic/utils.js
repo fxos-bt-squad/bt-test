@@ -46,4 +46,8 @@
       child.prototype.constructor = parent;
     };
   })();
+
+  utils.notifyUnimplemented = function() {
+    console.log('[waring] An unimplemented function/method was called');
+  };
 })(window);
