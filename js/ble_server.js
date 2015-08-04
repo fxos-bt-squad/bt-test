@@ -1,20 +1,38 @@
-/* global BluetoothManager*/
+/* global BluetoothManager, evt */
 'use strict';
 
 (function(exports) {
   var BleServer = function() {};
 
-  BleServer.prototype = {
+  BleServer.prototype = evt({
     adapterStateElem: document.getElementById('ble-server-adapter-state'),
     discoveringStateElem:
       document.getElementById('ble-server-discovering-state'),
     devicesListElem: document.getElementById('ble-server-devices-list'),
+
+    leScanButton: document.getElementById('le-scan'),
+
+    _devices: {},
 
     _bluetoothManager: undefined,
 
     _app: undefined,
 
     _ready: false,
+
+    _scanning: false,
+
+    get scanning () {
+      return this._scanning;
+    },
+
+    set scanning (value) {
+      if (value !== this._scanning) {
+        this._scanning = value;
+        this._toggleLeScanButtonText();
+        this.fire('scanning-changed', value);
+      }
+    },
 
     start: function(app) {
       var that = this;
@@ -34,14 +52,18 @@
           that.discoveringStateElem.textContent =
             discovering ? 'discovering' : 'not discovering';
         });
+
+      this.leScanButton.addEventListener('click', this);
     },
 
     turnOn: function() {
       var that = this;
       if (!this._ready) {
-        this._truncateDeviceElem().then(function() {
+        this._truncateDevices().then(function() {
           that._bluetoothManager.on('device-found', that.handleDeviceFound);
-          that._bluetoothManager.safelyStartLeScan([]);
+          that._bluetoothManager.safelyStartLeScan([]).then(function() {
+            that.scanning = true;
+          });
           that._ready = true;
         });
       }
@@ -49,21 +71,29 @@
 
     turnOff: function() {
       if (this._ready) {
-        this._truncateDeviceElem();
+        this._truncateDevices();
         this._bluetoothManager.off('device-found', this.handleDeviceFound);
         this._bluetoothManager.safelyDisable();
+        this.scanning = false;
         this._ready = false;
       }
     },
 
-    _truncateDeviceElem: function() {
+    _truncateDevices: function() {
       var that = this;
+      // XXX
       return new Promise(function(resolve, reject) {
+        that._devices = {};
         [].forEach.call(that.devicesListElem.children, function(childElem) {
           that.devicesListElem.removeChild(childElem);
         });
         resolve();
       });
+    },
+
+    _toggleLeScanButtonText: function() {
+      this.leScanButton.textContent =
+        this.scanning ? 'Stop LE Scan' : 'Start LE Scan';
     },
 
     onModeSwitching: function(detail) {
@@ -81,26 +111,73 @@
 
     handleDeviceFound: undefined,
     onBluetoothDeviceFound: function(device) {
+      var address = device.address;
       console.log('['+device.address + '] ' + device.name + ' (' +
         device.type + ')');
-      this.devicesListElem.appendChild(this.createDeviceElem(device));
+      if (!this._devices[address]) {
+        this._devices[address] = device;
+        this.devicesListElem.appendChild(this.createDeviceElem(device));
+      }
+    },
+
+    connectDevice: function(device) {
+      var address = device.address;
+      console.log('connect to ' + address);
+      this._bluetoothManager.gattServerConnect(address).then(function() {
+        console.log('resolve connect to ' + address);
+      }).catch(function(reason) {
+        console.warn('reject due to ' + reason);
+      });
+    },
+
+    handleEvent: function(evt) {
+      var that = this;
+      var target = evt.target;
+      switch(evt.type) {
+        case 'click':
+          if (target.classList.contains('connect')) {
+            var device = this._devices[target.dataset.address];
+            if (device) {
+              this.connectDevice(device);
+            }
+          } else if (target.id === 'le-scan') {
+            if (this.scanning) {
+              this._bluetoothManager.safelyStopLeScan().then(function() {
+                that.scanning = false;
+              });
+            } else {
+              this._truncateDevices().then(function() {
+                that._bluetoothManager.safelyStartLeScan([]).then(function() {
+                  that.scanning = true;
+                });
+              });
+            }
+          }
+          break;
+      }
     },
 
     createDeviceElem: function(device) {
       var elem = document.createElement('div');
       var addressElem = document.createElement('span');
       var nameElem = document.createElement('span');
+      var connectButton = document.createElement('button');
 
       addressElem.textContent = '[' + device.address + ']';
       nameElem.textContent = device.name;
+      connectButton.dataset.address = device.address;
+      connectButton.textContent = 'Connect';
+      connectButton.classList.add('connect');
+      connectButton.addEventListener('click', this);
 
+      elem.appendChild(connectButton);
       elem.appendChild(addressElem);
       elem.appendChild(nameElem);
       elem.classList.add('device');
 
       return elem;
     }
-  };
+  });
 
   exports.BleServer = BleServer;
 }(window));

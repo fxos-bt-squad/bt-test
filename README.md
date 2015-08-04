@@ -34,6 +34,18 @@ $> gulp build
 $> gulp
 ```
 
+* refresh 3rd party library and rebuild a.k.a. clean build
+
+```sh
+$> gulp clean; gulp build
+```
+
+* refresh `bluetooth_manager` only and rebuild
+
+```sh
+$> gulp clean-dev; gulp build
+```
+
 ## Run unit-test
 
 $> gulp test

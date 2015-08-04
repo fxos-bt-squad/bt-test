@@ -17,6 +17,7 @@
     "bluetooth": {}
   },
   "default_locale": "en-US",
+  "orientation": "default",
   "icons": {
     "128": "/style/icons/bluetooth.png"
   }
