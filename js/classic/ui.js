@@ -16,7 +16,7 @@
    * @param {string=} className - Additional classes to add if needs.
    * @returns {Object} A jquery selector contains only the element created.
    */
-  var createSelector = function(nodeName, className) {
+  var _createSelector = function(nodeName, className) {
     var selector = $(document.createElement(nodeName));
     if (className !== undefined) {
       selector.addClass(className);
@@ -29,10 +29,10 @@
    * It adds a class "classic-ui" to the DOM element so we can write css
    * classes only for elements in class-ui's components easily.
    *
-   * @see createSelector
+   * @see _createSelector
    */
-  var createClassicUISelector = function(nodeName, className) {
-    return createSelector(nodeName, className).addClass('classic-ui');
+  var _createClassicUISelector = function(nodeName, className) {
+    return _createSelector(nodeName, className).addClass('classic-ui');
   };
 
   /**
@@ -51,7 +51,7 @@
    * @param enable whether this switch is enabled or not in default.
    */
   ui.SwitchButton = function(handler, defaultState, enable) {
-    this._selector = createClassicUISelector('div', 'switch-button');
+    this._selector = _createClassicUISelector('div', 'switch-button');
     this._selector.slider({max: 2}).slider('disable');
     this._handler = handler;
     this._state = '';
@@ -135,13 +135,13 @@
         return;
       }
       if (this._state == this.STATE.OFF) {
-        this._handler.onTurnOn();
+        utils.callMethodIfIsFunction(this._handler, 'onTurnOn', this);
       } else if (this._state == this.STATE.TURNING_ON) {
-        this._handler.onCancelTurnOn();
+        utils.callMethodIfIsFunction(this._handler, 'onCancelTurnOn', this);
       } else if (this._state == this.STATE.TURNING_OFF) {
-        this._handler.onCancelTurnOff();
+        utils.callMethodIfIsFunction(this._handler, 'onCancelTurnOff', this);
       } else {
-        this._handler.onTurnOff();
+        utils.callMethodIfIsFunction(this._handler, 'onTurnOff', this);
       }
     }
   };
@@ -166,15 +166,14 @@
   };
 
   ui.NumberInput = function(handler, minValue, maxValue, step, defaultValue) {
-    ui.Input.call(this, createClassicUISelector('input', 'number-input'));
+    ui.Input.call(this, _createClassicUISelector('input', 'number-input'));
     this.selector.attr('type', 'number');
     this.selector.attr('min', minValue);
     this.selector.attr('max', maxValue);
     this.selector.attr('step', step);
     this.selector.val(defaultValue);
-    this.selector.change(function() {
-      handler.onChange();
-    });
+    this.selector.change(
+        utils.callThisMethodIfIsFunction.bind(handler, 'onChange', this));
   };
 
   ui.NumberInput.prototype = {};
@@ -182,11 +181,10 @@
   utils.setInheritFrom(ui.NumberInput, ui.Input);
 
   ui.StringInput = function(handler, defaultValue) {
-    ui.Input.call(this, createClassicUISelector('input', 'string-input'));
+    ui.Input.call(this, _createClassicUISelector('input', 'string-input'));
     this.selector.attr('type', 'text').val(defaultValue);
-    this.selector.change(function() {
-      handler.onChange();
-    });
+    this.selector.change(
+        utils.callThisMethodIfIsFunction.bind(handler, 'onChange', this));
   };
 
   ui.StringInput.prototype = {};
@@ -194,24 +192,23 @@
   utils.setInheritFrom(ui.StringInput, ui.Input);
 
   ui.OptionsInput = function(handler, options, defaultValue) {
-    ui.Input.call(this, createClassicUISelector('select', 'options-input'));
+    ui.Input.call(this, _createClassicUISelector('select', 'options-input'));
     for (var i = 0; i < options.length; ++i) {
-      var option = createSelector('option');
+      var option = _createSelector('option');
       option.attr('value', options[i]).html(options[i]);
       if (options[i] == defaultValue) {
         option.attr('selected', 'selected');
       }
       this.selector.append(option);
     }
-    this.selector.change(function() {
-      handler.onChange();
-    });
+    this.selector.change(
+        utils.callThisMethodIfIsFunction.bind(handler, 'onChange', this));
   };
 
   ui.OptionsInput.prototype = {
     addOption: function(option, index) {
       index = Math.max(0, index);
-      var optionElement = createSelector('option');
+      var optionElement = _createSelector('option');
       optionElement.attr('value', option).html(option);
       if (this.selector.children().length <= index) {
         this.selector.append(optionElement);
@@ -247,7 +244,7 @@
    *     in default.
    */
   ui.Block = function(className, isExpanded) {
-    this._selector = createClassicUISelector('div');
+    this._selector = _createClassicUISelector('div');
     this._selector.addClass('block ' + className);
 
     this._isExpanded = isExpanded;
@@ -323,16 +320,16 @@
   ui.SwitchButtonBlock = function(
       handler, name, description, defaultState, enable) {
     ui.Block.call(this, 'switch-button-block', false);
-    var title = createSelector('div', 'title');
-    var titleLeft = createSelector('div', 'left');
-    var titleRight = createSelector('div', 'right');
+    var title = _createSelector('div', 'title');
+    var titleLeft = _createSelector('div', 'left');
+    var titleRight = _createSelector('div', 'right');
     title.append(titleLeft, titleRight);
     this._button = new ui.SwitchButton(handler, defaultState, enable);
     titleLeft.append(this._button.selector);
     titleRight.html(name);
     titleRight.click(this.toggleExpand.bind(this));
 
-    var body = createSelector('div', 'body').html(description);
+    var body = _createSelector('div', 'body').html(description);
 
     this.addChildSelector(title, 0, false);
     this.addChildSelector(body, 1, true);
@@ -368,26 +365,26 @@
   ui.ExecutionBlock = function(handler, name, description) {
     ui.Block.call(this, 'execution-block', false);
 
-    var title = createSelector('div', 'title').html(name);
+    var title = _createSelector('div', 'title').html(name);
     title.click(this.toggleExpand.bind(this));
 
-    var descriptionDiv = createSelector('div', 'description').html(description);
+    var descriptionDiv = _createSelector('div', 'description').html(description);
 
-    this._body = createSelector('div', 'body');
+    this._body = _createSelector('div', 'body');
 
-    this._buttonDiv = createSelector('div', 'button');
+    this._buttonDiv = _createSelector('div', 'button');
     this._buttonDiv.click(this._buttonOnClickHandler.bind(this));
 
     this._state = {};
 
-    this._statusDiv = createSelector('div', 'status');
-    this._progressBar = createSelector('div', 'progress-bar').progressbar();
+    this._statusDiv = _createSelector('div', 'status');
+    this._progressBar = _createSelector('div', 'progress-bar').progressbar();
 
     this._inputs = {};
     this._handler = handler;
 
-    var navLeft = createSelector('div', 'left');
-    var nav = createSelector('div', 'nav');
+    var navLeft = _createSelector('div', 'left');
+    var nav = _createSelector('div', 'nav');
     navLeft.append(this._statusDiv, this._progressBar);
     nav.append(navLeft, this._buttonDiv);
 
@@ -409,9 +406,9 @@
   ui.ExecutionBlock.prototype = {
     STATE: ui.ExecutionBlock.STATE,
     addParameter: function(name, input, index) {
-      var nameDiv = createSelector('div', 'name').text(name);
-      var inputDiv = createSelector('div', 'input').append(input);
-      var rowDiv = createSelector('div', 'input-row').append(nameDiv, inputDiv);
+      var nameDiv = _createSelector('div', 'name').text(name);
+      var inputDiv = _createSelector('div', 'input').append(input);
+      var rowDiv = _createSelector('div', 'input-row').append(nameDiv, inputDiv);
       this._body.insertAt(rowDiv, index);
       this._inputs[name] = {selector: input, rowDiv: rowDiv};
     },
@@ -442,9 +439,9 @@
       return this._progressBar.progressbar('option', 'value', value * 100);
     },
     _buttonOnClickHandler: function(evt) {
-      console.log(this._state);
       if (this._state.hasOwnProperty('handlerName')) {
-        this._handler[this._state.handlerName]();
+        utils.callMethodIfIsFunction(
+            this._handler, this._state.handlerName, this);
       }
     }
   };
@@ -454,15 +451,15 @@
   ui.PlayButtonBlock = function(handler, name, description, defaultEnable) {
     ui.Block.call(this, 'play-button-block', false);
 
-    var title = createSelector('div', 'title');
-    var titleLeft = createSelector('div', 'left');
-    var titleRight = createSelector('div', 'right');
-    var playButton = createSelector('span', 'ui-icon ui-icon-play');
+    var title = _createSelector('div', 'title');
+    var titleLeft = _createSelector('div', 'left');
+    var titleRight = _createSelector('div', 'right');
+    var playButton = _createSelector('span', 'ui-icon ui-icon-play');
     title.append(titleLeft.html(name), titleRight.append(playButton));
     titleLeft.click(this.toggleExpand.bind(this));
     playButton.click(this._onPlay.bind(this));
 
-    var body = createSelector('div', 'body').html(description);
+    var body = _createSelector('div', 'body').html(description);
 
     this.addChildSelector(title, 0, false);
     this.addChildSelector(body, 1, true);
@@ -482,7 +479,7 @@
     },
     _onPlay: function() {
       if (this._enable) {
-        this._handler.onPlay();
+        utils.callMethodIfIsFunction(this._handler, 'onPlay', this);
       }
     }
   };
@@ -492,19 +489,18 @@
   ui.Tab = function(handler) {
     this._id = utils.createUniqueId();
 
-    this._title = createClassicUISelector('li', 'tab title');
-    this._titleLink = createSelector('a').attr('href', '#' + this._id);
-    this._titleCloseButton = createSelector('span', 'ui-icon ui-icon-close');
+    this._title = _createClassicUISelector('li', 'tab title');
+    this._titleLink = _createSelector('a').attr('href', '#' + this._id);
+    this._titleCloseButton = _createSelector('span', 'ui-icon ui-icon-close');
     this._titleCloseButton.attr('role', 'presentation');
-    this._titleCloseButton.click(this._onCloseButtonClicked.bind(this));
+    this._titleCloseButton.click(
+        utils.callThisMethodIfIsFunction.bind(this._handler, 'onClose', this));
     this._title.append(this._titleLink, this._titleCloseButton);
 
-    this._body = createClassicUISelector('div', 'tab body');
+    this._body = _createClassicUISelector('div', 'tab body');
     this._body.attr('id', this._id);
 
     this._blocks = [];
-
-    this._handler = handler;
   };
 
   ui.Tab.prototype = {
@@ -549,16 +545,12 @@
       this._title.remove();
       this._body.remove();
       return this;
-    },
-
-    _onCloseButtonClicked: function() {
-      this._handler.onClose();
     }
   };
 
   ui.TabsManager = function() {
-    this._body = createClassicUISelector('div', 'tabs-manager body');
-    this._titleBar = createClassicUISelector('ul', 'tabs-manager title');
+    this._body = _createClassicUISelector('div', 'tabs-manager body');
+    this._titleBar = _createClassicUISelector('ul', 'tabs-manager title');
     this._body.append(this._titleBar);
 
     this._body.tabs({});
