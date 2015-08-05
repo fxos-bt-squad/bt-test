@@ -67,30 +67,4 @@
   utils.argsObjToArray = function(args, begin, end) {
     return Array.prototype.slice.call(args, begin, end);
   };
-
-  /**
-   * Calls the specified method of `this` object if that method is defined.
-   *
-   * @param {string} methodName - Name of the specified method.
-   * @param {=} args - Arguments to pass to the method.
-   * @returns The return value of that method if it is an instance of Function.
-   */
-  utils.callThisMethodIfIsFunction = function(methodName, args) {
-    if (this[methodName] instanceof Function) {
-      return this[methodName].apply(this, utils.argsObjToArray(arguments, 1));
-    }
-  };
-
-  /**
-   * Calls the specified method of the specified object if it is defined.
-   *
-   * @param {Object} object - The specified object.
-   * @param {String} methodName - Name of the specified method.
-   * @param {=} args - Arguments to pass to the method.
-   * @returns The return value of that method if it's an instance of a Function.
-   */
-  utils.callMethodIfIsFunction = function(object, methodName, args) {
-    return utils.callThisMethodIfIsFunction.apply(
-        object, utils.argsObjToArray(arguments, 1));
-  };
 })(window);

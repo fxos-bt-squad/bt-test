@@ -1,9 +1,6 @@
-.classic-ui.tab.title .ui-icon-close {
-  float: left;
-}
-
 .classic-ui.switch-button {
   width: 30px;
+  cursor: pointer;
 }
 
 .classic-ui.switch-button.state-off {
@@ -69,6 +66,10 @@
   margin: 5px;
 }
 
+.classic-ui.execution-block > .title {
+  cursor: pointer;
+}
+
 .classic-ui.execution-block > .nav {
   display: table;
   width: 100%;
@@ -93,7 +94,7 @@
   width: 0;
 }
 
-.classic-ui.execution-block > .nav > .button.state-start {
+.classic-ui.execution-block > .nav > .button.state-pending {
   background-color: #3a3;
 }
 
@@ -101,7 +102,7 @@
   background-color: #aaa;
 }
 
-.classic-ui.execution-block > .nav > .button.state-stop {
+.classic-ui.execution-block > .nav > .button.state-running {
   background-color: #a33;
 }
 
@@ -124,4 +125,8 @@
 
 .classic-ui.execution-block > .body > .input-row > .input {
   display: table-cell;
+}
+
+.classic-ui.tab.title .ui-icon-close {
+  float: left;
 }
