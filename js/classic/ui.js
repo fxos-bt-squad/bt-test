@@ -26,7 +26,7 @@
 
   /**
    * Creates a jquery selector which contains a DOM element for classic-ui.
-   * Its add a class "classic-ui" to the DOM element so we can write css
+   * It adds a class "classic-ui" to the DOM element so we can write css
    * classes only for elements in class-ui's components easily.
    *
    * @see createSelector
@@ -51,9 +51,8 @@
    * @param enable whether this switch is enabled or not in default.
    */
   ui.SwitchButton = function(handler, defaultState, enable) {
-    this._selector = $(document.createElement('div')).slider({max: 2});
-    this._selector.addClass('classic-ui-switch-button');
-    this._selector.slider('disable');
+    this._selector = createClassicUISelector('div', 'switch-button');
+    this._selector.slider({max: 2}).slider('disable');
     this._handler = handler;
     this._state = '';
     this._enable = null;
@@ -94,7 +93,7 @@
      * @param state one of the option in `ui.SwitchButton.STATE`
      */
     set state(state) {
-      var prefix = 'classic-ui-switch-button-state-';
+      var prefix = 'state-';
       this._selector.removeClass(prefix + this._state);
       this._state = state;
       this._selector.addClass(prefix + this._state);
@@ -167,7 +166,7 @@
   };
 
   ui.NumberInput = function(handler, minValue, maxValue, step, defaultValue) {
-    ui.Input.call(this, $(document.createElement('input')));
+    ui.Input.call(this, createClassicUISelector('input', 'number-input'));
     this.selector.attr('type', 'number');
     this.selector.attr('min', minValue);
     this.selector.attr('max', maxValue);
@@ -183,7 +182,7 @@
   utils.setInheritFrom(ui.NumberInput, ui.Input);
 
   ui.StringInput = function(handler, defaultValue) {
-    ui.Input.call(this, $(document.createElement('input')));
+    ui.Input.call(this, createClassicUISelector('input', 'string-input'));
     this.selector.attr('type', 'text').val(defaultValue);
     this.selector.change(function() {
       handler.onChange();
@@ -195,9 +194,9 @@
   utils.setInheritFrom(ui.StringInput, ui.Input);
 
   ui.OptionsInput = function(handler, options, defaultValue) {
-    ui.Input.call(this, $(document.createElement('select')));
+    ui.Input.call(this, createClassicUISelector('select', 'options-input'));
     for (var i = 0; i < options.length; ++i) {
-      var option = $(document.createElement('option'));
+      var option = createSelector('option');
       option.attr('value', options[i]).html(options[i]);
       if (options[i] == defaultValue) {
         option.attr('selected', 'selected');
@@ -212,7 +211,7 @@
   ui.OptionsInput.prototype = {
     addOption: function(option, index) {
       index = Math.max(0, index);
-      var optionElement = $(document.createElement('option'));
+      var optionElement = createSelector('option');
       optionElement.attr('value', option).html(option);
       if (this.selector.children().length <= index) {
         this.selector.append(optionElement);
@@ -242,15 +241,18 @@
    * While the block is expanded, all elements inside it are visible;  otherwise
    * some of them are hidden.
    *
-   * @param isExpanded whether this block should be expanded or not in default.
+   * @constructor
+   * @param {string} className - Additional class name of the DOM element.
+   * @param {Boolean} isExpanded - Whether this block should be expanded or not
+   *     in default.
    */
-  ui.Block = function(isExpanded) {
-    this._hideableChildren = [];
-    this._isExpanded = false;
-    this._selector = $(document.createElement('div'));
-    this._selector.addClass('classic-ui-block');
+  ui.Block = function(className, isExpanded) {
+    this._selector = createClassicUISelector('div');
+    this._selector.addClass('block ' + className);
 
-    this.isExpanded = (isExpanded !== undefined ? isExpanded : true);
+    this._isExpanded = isExpanded;
+
+    this._hideableChildren = [];
   };
 
   ui.Block.prototype = {
@@ -320,21 +322,17 @@
 
   ui.SwitchButtonBlock = function(
       handler, name, description, defaultState, enable) {
-    ui.Block.call(this, false);
-    var title = $(document.createElement('div'));
-    var titleLeft = $(document.createElement('div'));
-    var titleRight = $(document.createElement('div'));
-    title.addClass('switch-button-title');
-    titleLeft.addClass('left');
-    titleRight.addClass('right');
-    title.append(titleLeft).append(titleRight);
+    ui.Block.call(this, 'switch-button-block', false);
+    var title = createSelector('div', 'title');
+    var titleLeft = createSelector('div', 'left');
+    var titleRight = createSelector('div', 'right');
+    title.append(titleLeft, titleRight);
     this._button = new ui.SwitchButton(handler, defaultState, enable);
     titleLeft.append(this._button.selector);
     titleRight.html(name);
     titleRight.click(this.toggleExpand.bind(this));
 
-    var body = $(document.createElement('div'));
-    body.addClass('switch-button-body').html(description);
+    var body = createSelector('div', 'body').html(description);
 
     this.addChildSelector(title, 0, false);
     this.addChildSelector(body, 1, true);
@@ -368,36 +366,30 @@
   utils.setInheritFrom(ui.SwitchButtonBlock, ui.Block);
 
   ui.ExecutionBlock = function(handler, name, description) {
-    ui.Block.call(this, false);
-    this.selector.addClass('classic-ui-execution-block');
+    ui.Block.call(this, 'execution-block', false);
 
-    var title = $(document.createElement('div')).html(name);
+    var title = createSelector('div', 'title').html(name);
     title.click(this.toggleExpand.bind(this));
 
-    var descriptionDiv = $(document.createElement('div'));
-    descriptionDiv.html(description);
+    var descriptionDiv = createSelector('div', 'description').html(description);
 
-    this._body = $(document.createElement('div'));
-    this._body.addClass('body');
+    this._body = createSelector('div', 'body');
 
-    this._buttonDiv = $(document.createElement('div'));
-    this._buttonDiv.addClass('button');
+    this._buttonDiv = createSelector('div', 'button');
     this._buttonDiv.click(this._buttonOnClickHandler.bind(this));
 
     this._state = {};
 
-    this._statusDiv = $(document.createElement('div'));
-    this._statusDiv.addClass('status');
-    this._progressBar = $(document.createElement('div')).progressbar();
-    this._progressBar.addClass('progress-bar');
+    this._statusDiv = createSelector('div', 'status');
+    this._progressBar = createSelector('div', 'progress-bar').progressbar();
 
     this._inputs = {};
     this._handler = handler;
 
-    var navLeft = $(document.createElement('div')).addClass('left');
-    var nav = $(document.createElement('div')).addClass('nav');
-    navLeft.append(this._statusDiv).append(this._progressBar);
-    nav.append(navLeft).append(this._buttonDiv);
+    var navLeft = createSelector('div', 'left');
+    var nav = createSelector('div', 'nav');
+    navLeft.append(this._statusDiv, this._progressBar);
+    nav.append(navLeft, this._buttonDiv);
 
     this.addChildSelector(title, 0, false);
     this.addChildSelector(descriptionDiv, 1, true);
@@ -417,29 +409,23 @@
   ui.ExecutionBlock.prototype = {
     STATE: ui.ExecutionBlock.STATE,
     addParameter: function(name, input, index) {
-      var nameDiv = $(document.createElement('div'));
-      nameDiv.addClass('name');
-      nameDiv.text(name);
-      var inputDiv = $(document.createElement('div'));
-      inputDiv.addClass('input');
-      inputDiv.append(input.selector);
-      var rowDiv = $(document.createElement('div'));
-      rowDiv.addClass('input-row');
-      rowDiv.append(nameDiv).append(inputDiv);
+      var nameDiv = createSelector('div', 'name').text(name);
+      var inputDiv = createSelector('div', 'input').append(input);
+      var rowDiv = createSelector('div', 'input-row').append(nameDiv, inputDiv);
       this._body.insertAt(rowDiv, index);
-      this._inputs[name] = input;
+      this._inputs[name] = {selector: input, rowDiv: rowDiv};
     },
     removeParameter: function(name) {
-      var rowDiv = this._inputs[name].selector.parent().parent();
-      this._inputs[name].destroy();
-      rowDiv.remove();
+      this._inputs[name].selector.destroy();
+      this._inputs[name].rowDiv.remove();
+      this._inputs[name] = null;
     },
     get state() {
       return this._state;
     },
     set state(state) {
-      this._buttonDiv.removeClass('button-state-' + this._state.buttonCaption);
-      this._buttonDiv.addClass('button-state-' + state.buttonCaption);
+      this._buttonDiv.removeClass('state-' + this._state.buttonCaption);
+      this._buttonDiv.addClass('state-' + state.buttonCaption);
       this._buttonDiv.text(state.buttonCaption);
       this._state = state;
     },
@@ -466,21 +452,17 @@
   utils.setInheritFrom(ui.ExecutionBlock, ui.Block);
 
   ui.PlayButtonBlock = function(handler, name, description, defaultEnable) {
-    ui.Block.call(this, false);
+    ui.Block.call(this, 'play-button-block', false);
 
-    var title = $(document.createElement('div'));
-    title.addClass('play-button-title');
-    var titleLeft = $(document.createElement('div')).addClass('left');
-    titleLeft.html(name);
+    var title = createSelector('div', 'title');
+    var titleLeft = createSelector('div', 'left');
+    var titleRight = createSelector('div', 'right');
+    var playButton = createSelector('span', 'ui-icon ui-icon-play');
+    title.append(titleLeft.html(name), titleRight.append(playButton));
     titleLeft.click(this.toggleExpand.bind(this));
-    var titleRight = $(document.createElement('div')).addClass('right');
-    var playButton = $(document.createElement('span'));
-    playButton.addClass('ui-icon').addClass('ui-icon-play');
     playButton.click(this._onPlay.bind(this));
-    title.append(titleLeft).append(titleRight.append(playButton));
 
-    var body = $(document.createElement('div'));
-    body.addClass('play-button-body').html(description);
+    var body = createSelector('div', 'body').html(description);
 
     this.addChildSelector(title, 0, false);
     this.addChildSelector(body, 1, true);
@@ -575,8 +557,8 @@
   };
 
   ui.TabsManager = function() {
-    this._body = $(document.createElement('div'));
-    this._titleBar = $(document.createElement('ul'));
+    this._body = createClassicUISelector('div', 'tabs-manager body');
+    this._titleBar = createClassicUISelector('ul', 'tabs-manager title');
     this._body.append(this._titleBar);
 
     this._body.tabs({});
