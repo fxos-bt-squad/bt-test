@@ -15,6 +15,6 @@
     "evt": "gaia-components/evt#~0.4.0",
     "jquery": "~2.1.4",
     "jquery-ui": "~1.11.4",
-    "bluetooth_manager": "dwi2/bluetooth_manager"
+    "bluetooth_manager": "fxos-bt-squad/bluetooth_manager"
   }
 }
