@@ -34,17 +34,25 @@ $> gulp build
 $> gulp
 ```
 
-* refresh 3rd party library and rebuild a.k.a. clean build
+* refresh 3rd party library and rebuild, a.k.a. clean build
 
 ```sh
 $> gulp clean; gulp build
 ```
 
-* refresh `bluetooth_manager` only and rebuild
+* refresh bower package:`bluetooth_manager` only and rebuild
 
 ```sh
-$> gulp clean-dev; gulp build
+$> gulp build-dev
 ```
+
+## Generate documents
+
+```sh
+$> gulp docs
+```
+
+document is generated at `docs/`. 
 
 ## Run unit-test
 

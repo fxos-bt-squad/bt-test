@@ -9,6 +9,8 @@ var browserSync = require('browser-sync');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
 var del = require('del');
+var shell = require('gulp-shell');
+var runSequence = require('run-sequence');
 var fs = require('fs');
 var path = require('path');
 
@@ -49,9 +51,21 @@ gulp.task('watch', function() {
   gulp.watch(JS_FILE_PATH, ['jshint', 'jscs']);
 });
 
-gulp.task('build', ['bower', 'jshint', 'jscs']);
+gulp.task('docs', ['clean-docs'], function() {
+  gulp.src(['README.md', 'js/**/*.js'], {read: false}).pipe(
+    shell(['./node_modules/.bin/jsdoc -c ./jsdoc.json -d ./docs -r']));
+});
 
-gulp.task('build-dev', ['clean-dev', 'build']);
+gulp.task('clean-docs', del.bind(null, ['docs']));
+
+// TODO: we might need a 'clean-build' command
+gulp.task('build', ['bower', 'docs'], function(callback) {
+  runSequence('bower', ['docs', 'jshint', 'jscs'], callback);
+});
+
+gulp.task('build-dev', ['clean-dev'], function(callback) {
+  runSequence('clean-dev', 'build', callback);
+});
 
 gulp.task('dependency-for-test', function() {
   return gulp.src(TEST_DEPENDENCY)

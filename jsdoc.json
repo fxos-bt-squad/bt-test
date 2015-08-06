@@ -1,0 +1,16 @@
+{
+  "name": "bt-test",
+  "tags": {
+    "dictionaries": ["jsdoc"]
+  },
+  "source": {
+    "include": ["README.md", "./js/"]
+  },
+  "plugins": [
+    "plugins/markdown",
+    "plugins/summarize"
+  ],
+  "opts": {
+    "private": true
+  }
+}

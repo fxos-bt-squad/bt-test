@@ -25,10 +25,13 @@
     "gulp-jshint": "^1.11.2",
     "gulp-notify": "^2.2.0",
     "gulp-put": "0.0.3",
+    "gulp-shell": "^0.4.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-util": "^3.0.6",
+    "jsdoc": "^3.3.2",
     "jshint-stylish": "^2.0.1",
     "mocha": "^2.2.5",
+    "run-sequence": "^1.1.2",
     "should": "^7.0.2",
     "sinon": "^1.15.4"
   }
