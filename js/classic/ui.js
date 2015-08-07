@@ -537,15 +537,15 @@
 
     var title = _createSelector('div', 'title');
 
-    var titleLeft = _createSelector('div', 'left').html(name);
-    titleLeft.click(this.toggleExpand.bind(this));
+    this._name = _createSelector('div', 'left').html(name);
+    this._name.click(this.toggleExpand.bind(this));
 
     var titleRight = _createSelector('div', 'right').append(playButton);
 
-    var body = _createSelector('div', 'body').html(description);
+    this._body = _createSelector('div', 'body').html(description);
 
-    this.selector.append(title.append(titleLeft, titleRight), body);
-    this._addHideableChildren(body);
+    this.selector.append(title.append(this._name, titleRight), this._body);
+    this._addHideableChildren(this._body);
 
     this._enable = enable;
   };
@@ -565,6 +565,38 @@
      */
     set enable(state) {
       this._enable = state;
+    },
+
+    /**
+     * @returns {String} Name of this block to show.
+     */
+    get name() {
+      return this._name.html();
+    },
+
+    /**
+     * Sets the name of this block to show.
+     *
+     * @param {String} name - The new name.
+     */
+    set name(name) {
+      this._name.html(name);
+    },
+
+    /**
+     * @returns {String} Description string to show.
+     */
+    get description() {
+      return this._body.html();
+    },
+
+    /**
+     * Sets the description string.
+     *
+     * @param {String} description - Description string.
+     */
+    set description(description) {
+      this._body.html(description);
     },
 
     _handlePlayButtonClicked: function() {
@@ -839,6 +871,13 @@
         this._blocks.splice(index, 1);
       }
       return this;
+    },
+
+    /**
+     * @returns {Number} Number of blocks in this tab.
+     */
+    get numBlocks() {
+      return this._blocks.length;
     },
 
     /**
