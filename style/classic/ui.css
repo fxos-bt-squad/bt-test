@@ -1,127 +1,132 @@
-.classic-ui-tab-title .ui-icon-close {
-  float: left;
+.classic-ui.switch-button {
+  width: 30px;
+  cursor: pointer;
 }
 
-.classic-ui-block {
+.classic-ui.switch-button.state-off {
+  background-color: #911;
+}
+
+.classic-ui.switch-button.state-turning-on {
+  background-color: #555;
+}
+
+.classic-ui.switch-button.state-turning-off {
+  background-color: #aa1;
+}
+
+.classic-ui.switch-button.state-on {
+  background-color: #191;
+}
+
+.classic-ui.block {
   border: 1px solid #000;
   padding: 15px 5px;
 }
 
-.classic-ui-switch-button {
-  width: 30px;
-}
-
-.classic-ui-switch-button-state-off {
-  background-color: #911;
-}
-
-.classic-ui-switch-button-state-turning-on {
-  background-color: #555;
-}
-
-.classic-ui-switch-button-state-turning-off {
-  background-color: #aa1;
-}
-
-.classic-ui-switch-button-state-on {
-  background-color: #191;
-}
-
-.classic-ui-block .switch-button-title {
+.classic-ui.switch-button-block > .title {
   display: table;
   vertical-align: middle;
   width: 100%;
 }
 
-.classic-ui-block .switch-button-title .left {
+.classic-ui.switch-button-block > .title > .left {
   display: table-cell;
   width: 0;
 }
 
-.classic-ui-block .switch-button-title .right {
+.classic-ui.switch-button-block > .title > .right {
   cursor: pointer;
   display: table-cell;
   padding-left: 5px;
 }
 
-.classic-ui-block .switch-button-body {
+.classic-ui.switch-button-block > .body {
   margin-top: 5px;
 }
 
-.classic-ui-block .play-button-title {
+.classic-ui.play-button-block > .title {
   display: table;
   vertical-align: middle;
   width: 100%;
 }
 
-.classic-ui-block .play-button-title .left {
+.classic-ui.play-button-block > .title > .left {
   cursor: pointer;
   display: table-cell;
 }
 
-.classic-ui-block .play-button-title .right {
+.classic-ui.play-button-block > .title > .right {
   cursor: pointer;
   display: table-cell;
   width: 0;
 }
 
-.classic-ui-block .play-button-body {
+.classic-ui.play-button-block > .body {
   margin: 5px;
 }
 
-.classic-ui-execution-block > .nav {
+.classic-ui.execution-block > .title {
+  cursor: pointer;
+}
+
+.classic-ui.execution-block > .nav {
   display: table;
   width: 100%;
 }
 
-.classic-ui-execution-block > .nav > div {
+.classic-ui.execution-block > .nav > div {
   display: table-cell;
 }
 
-.classic-ui-execution-block > .nav > .left > .status {
+.classic-ui.execution-block > .nav > .left > .status {
   min-height: 1em;
 }
 
-.classic-ui-execution-block > .nav > .left > .progress-bar {
+.classic-ui.execution-block > .nav > .left > .progress-bar {
   height: 0.6em;
 }
 
-.classic-ui-execution-block > .nav > .button {
+.classic-ui.execution-block > .nav > .button {
   cursor: pointer;
   text-align: center;
   vertical-align: middle;
   width: 0;
 }
 
-.classic-ui-execution-block > .nav > .button-state-start {
+.classic-ui.execution-block > .nav > .button.state-pending {
   background-color: #3a3;
 }
 
-.classic-ui-execution-block > .nav > .button-state-starting {
+.classic-ui.execution-block > .nav > .button.state-starting {
   background-color: #aaa;
 }
 
-.classic-ui-execution-block > .nav > .button-state-stop {
+.classic-ui.execution-block > .nav > .button.state-running {
   background-color: #a33;
 }
 
-.classic-ui-execution-block > .nav > .button-state-stopping {
+.classic-ui.execution-block > .nav > .button.state-stopping {
   background-color: #aaa;
 }
 
-.classic-ui-execution-block > .body {
+.classic-ui.execution-block > .body {
   display: table-cell;
 }
 
-.classic-ui-execution-block > .input-row {
+.classic-ui.execution-block > .body > .input-row {
   display: table-row;
 }
 
-.classic-ui-execution-block > .input-row > .name {
+.classic-ui.execution-block > .body > .input-row > .name {
   display: table-cell;
   width: 0;
 }
 
-.classic-ui-execution-block > .input-row > .input {
+.classic-ui.execution-block > .body > .input-row > .input {
   display: table-cell;
+}
+
+.classic-ui.tab.title .ui-icon-close {
+  float: left;
 }
