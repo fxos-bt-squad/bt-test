@@ -96,6 +96,28 @@
         this.scanning ? 'Stop LE Scan' : 'Start LE Scan';
     },
 
+    _modifyDeviceElem: function(address, isConnected) {
+      var that = this;
+      var targetId = 'device-' + address;
+      var button;
+      var deviceElem;
+      [].some.call(that.devicesListElem.children, function(childElem) {
+        if (childElem.id === targetId) {
+          deviceElem = childElem;
+          button = childElem.getElementsByTagName('button')[0];
+          return true;
+        }
+        return false;
+      });
+
+      if (button) {
+        button.textContent = isConnected ? 'Disconnect' : 'Connect';
+      }
+      if (deviceElem) {
+        deviceElem.dataset.isConnected = isConnected;
+      }
+    },
+
     onModeSwitching: function(detail) {
       if (detail) {
         switch(detail.mode) {
@@ -121,10 +143,24 @@
     },
 
     connectDevice: function(device) {
+      var that = this;
       var address = device.address;
       console.log('connect to ' + address);
       this._bluetoothManager.gattServerConnect(address).then(function() {
         console.log('resolve connect to ' + address);
+        that._modifyDeviceElem(address, true);
+      }).catch(function(reason) {
+        console.warn('reject due to ' + reason);
+      });
+    },
+
+    disconnectDevice: function(device) {
+      var that = this;
+      var address = device.address;
+      console.log('disconnect from ' + address);
+      this._bluetoothManager.gattServerDisconnect(address).then(function() {
+        console.log('resolve disconnect from ' + address);
+        that._modifyDeviceElem(address, false);
       }).catch(function(reason) {
         console.warn('reject due to ' + reason);
       });
@@ -137,8 +173,13 @@
         case 'click':
           if (target.classList.contains('connect')) {
             var device = this._devices[target.dataset.address];
+            var parentNode = target.parentNode;
             if (device) {
-              this.connectDevice(device);
+              if (parentNode.dataset.isConnected === 'true') {
+                this.disconnectDevice(device);
+              } else {
+                this.connectDevice(device);
+              }
             }
           } else if (target.id === 'le-scan') {
             if (this.scanning) {
@@ -173,6 +214,8 @@
       elem.appendChild(connectButton);
       elem.appendChild(addressElem);
       elem.appendChild(nameElem);
+      elem.id = 'device-' + device.address;
+      elem.dataset.isConnected = false;
       elem.classList.add('device');
 
       return elem;
