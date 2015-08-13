@@ -2,6 +2,14 @@
 'use strict';
 
 (function(exports) {
+  /**
+   * BleServer is the main class controlling section#ble-server-api. It handles
+   * everything happen in this panel.
+   * @class  BleServer
+   * @requires  BluetoothManager
+   * @requires  evt
+   * @fires BleServer#scanning-changed
+   */
   var BleServer = function() {};
 
   BleServer.prototype = evt({
@@ -22,6 +30,10 @@
 
     _scanning: false,
 
+    /**
+     * Indicate whether BLE is in scanning state
+     * @member {Boolean} BleServer#scanning
+     */
     get scanning () {
       return this._scanning;
     },
@@ -30,10 +42,27 @@
       if (value !== this._scanning) {
         this._scanning = value;
         this._toggleLeScanButtonText();
+        /**
+         * @event BleServer#scanning-changed
+         * @type {Boolean}
+         */
         this.fire('scanning-changed', value);
       }
     },
 
+    /**
+     * Start BleServer. It also listens to several events:
+     * 1. `after-switch-mode` on {@link App}
+     * 2. `state-changed` on BluetoothManager
+     * 3. `discoverying-state-changed` on BluetoothManager
+     *
+     * When it receives `after-switching-mode`, it will call
+     * {@link BleServer#turnOn} if we are in `ble-server-api` mode and call
+     * {@link BleServer#turnOff} otherwise.
+     * @method BleServer#start
+     * @public
+     * @param  {App} app - instance of App
+     */
     start: function(app) {
       var that = this;
 
@@ -56,6 +85,11 @@
       this.leScanButton.addEventListener('click', this);
     },
 
+    /**
+     * enable BluetoothManager and start scanning
+     * @public
+     * @method BleServer#turnOn
+     */
     turnOn: function() {
       var that = this;
       if (!this._ready) {
@@ -69,6 +103,11 @@
       }
     },
 
+    /**
+     * disable BluetoothManager
+     * @public
+     * @method BleServer#turnOff
+     */
     turnOff: function() {
       if (this._ready) {
         this._truncateDevices();
@@ -79,6 +118,11 @@
       }
     },
 
+    /**
+     * clean up device info from screen
+     * @private
+     * @method BleServer#_truncateDevices
+     */
     _truncateDevices: function() {
       var that = this;
       // XXX
@@ -91,11 +135,24 @@
       });
     },
 
+    /**
+     * toggle text of leScanButton based on value of BleServer#scanning
+     * @private
+     * @method BleServer#_toggleLeScanButtonText
+     */
     _toggleLeScanButtonText: function() {
       this.leScanButton.textContent =
         this.scanning ? 'Stop LE Scan' : 'Start LE Scan';
     },
 
+    /**
+     * Modify HTML element representing the device, usually because of change of
+     * connection state.
+     * @private
+     * @method  BleServer#_modifyDeviceElem
+     * @param  {String}  address - address of the device
+     * @param  {Boolean} isConnected - denotes the device is connected or not
+     */
     _modifyDeviceElem: function(address, isConnected) {
       var that = this;
       var targetId = 'device-' + address;
@@ -118,6 +175,14 @@
       }
     },
 
+    /**
+     * turn BluetoothManager on or off according to the mode we are switching to
+     * @public
+     * @method BleServer#onModeSwitching
+     * @param  {Object} detail - event detail, which has only one property:
+     *                         `mode` for now. `mode` is in String type and
+     *                         represent the mode we are switching to.
+     */
     onModeSwitching: function(detail) {
       if (detail) {
         switch(detail.mode) {
@@ -142,6 +207,13 @@
       }
     },
 
+    /**
+     * make BluetoothManager connect to remote device using BLE GATT Server API
+     * @public
+     * @method  BleServer#connectDevice
+     * @param  {BluetoothDevice} device - see
+     *                            [http://mzl.la/1IMjCh0](http://mzl.la/1IMjCh0)
+     */
     connectDevice: function(device) {
       var that = this;
       var address = device.address;
@@ -154,6 +226,14 @@
       });
     },
 
+    /**
+     * make BluetoothManager disconnect from remote device using BLE GATT
+     * Server API
+     * @public
+     * @method  BleServer#connectDevice
+     * @param  {BluetoothDevice} device - see
+     *                            [http://mzl.la/1IMjCh0](http://mzl.la/1IMjCh0)
+     */
     disconnectDevice: function(device) {
       var that = this;
       var address = device.address;
@@ -166,6 +246,11 @@
       });
     },
 
+    /**
+     * Event handler
+     * @method BleServer#handleEvent
+     * @param  {Event} evt - event instance
+     */
     handleEvent: function(evt) {
       var that = this;
       var target = evt.target;
@@ -198,6 +283,23 @@
       }
     },
 
+    /**
+     * Create element representing the device
+     *
+     * ```
+     * <div class="device" data-is-connected="false" id="device-address">
+     *   <button class="connect" data-address="address">Connect</button>
+     *   <span>[address]</span>
+     *   <span>device name</span>
+     * </div>
+     * ```
+     *
+     * @public
+     * @method  BleServer#createDeviceElem
+     * @param  {BluetoothDevice} device - see
+     *                            [http://mzl.la/1IMjCh0](http://mzl.la/1IMjCh0)
+     * @return {HTMLElement} the element representing the device
+     */
     createDeviceElem: function(device) {
       var elem = document.createElement('div');
       var addressElem = document.createElement('span');
