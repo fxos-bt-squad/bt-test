@@ -59,11 +59,11 @@ gulp.task('docs', ['clean-docs'], function() {
 gulp.task('clean-docs', del.bind(null, ['docs']));
 
 // TODO: we might need a 'clean-build' command
-gulp.task('build', ['bower', 'docs'], function(callback) {
+gulp.task('build', function(callback) {
   runSequence('bower', ['docs', 'jshint', 'jscs'], callback);
 });
 
-gulp.task('build-dev', ['clean-dev'], function(callback) {
+gulp.task('build-dev', function(callback) {
   runSequence('clean-dev', 'build', callback);
 });
 
